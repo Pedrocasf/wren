@@ -48,20 +48,26 @@ if (BUILD_OPTIONAL_META OR BUILD_OPTIONAL_RAND)
 endif ()
 
 if (BUILD_OPTIONAL_META)
+        add_compile_definitions(WREN_OPT_META=1)
         target_sources(WrenVM PUBLIC
                 ${OPT_SRC_FILENAME}meta.h
         )
         target_sources(WrenVM PRIVATE
                 ${OPT_SRC_FILENAME}meta.c
         )
+else()
+        add_compile_definitions(WREN_OPT_META=0) 
 endif ()
 if (BUILD_OPTIONAL_RAND)
+        add_compile_definitions(WREN_OPT_RAND=1)                   
         target_sources(WrenVM PUBLIC
                 ${OPT_SRC_FILENAME}random.h
         )
     target_sources(WrenVM PRIVATE
                 ${OPT_SRC_FILENAME}random.c
         )
+else()
+        add_compile_definitions(WREN_OPT_RAND=0) 
 endif ()
 
 target_link_libraries(WrenVM m)
