@@ -59,7 +59,7 @@ else()
         add_compile_definitions(WREN_OPT_META=0) 
 endif ()
 if (BUILD_OPTIONAL_RAND)
-        add_compile_definitions(WREN_OPT_RAND=1)                   
+        add_compile_definitions(WREN_OPT_RANDOM=1)                   
         target_sources(WrenVM PUBLIC
                 ${OPT_SRC_FILENAME}random.h
         )
@@ -67,7 +67,7 @@ if (BUILD_OPTIONAL_RAND)
                 ${OPT_SRC_FILENAME}random.c
         )
 else()
-        add_compile_definitions(WREN_OPT_RAND=0) 
+        add_compile_definitions(WREN_OPT_RANDOM=0) 
 endif ()
 
 target_link_libraries(WrenVM m)
