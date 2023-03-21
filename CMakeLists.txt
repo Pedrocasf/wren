@@ -23,9 +23,8 @@ target_sources(WrenVM PUBLIC
         ${INC_SRC_FOLDER}wren.h
         ${VM_SRC_FILENAME}common.h
         )
-target_include_directories(WrenVM PUBLIC ${VM_SRC_FOLDER})
+target_include_directories(WrenVM PRIVATE ${VM_SRC_FOLDER})
 target_sources(WrenVM PRIVATE
-        ${VM_SRC_FILENAME}common.h
         ${VM_SRC_FILENAME}compiler.h
         ${VM_SRC_FILENAME}compiler.c
         ${VM_SRC_FILENAME}core.h
@@ -44,7 +43,7 @@ target_sources(WrenVM PRIVATE
         ${VM_SRC_FILENAME}vm.c)
 
 if (BUILD_OPTIONAL_META OR BUILD_OPTIONAL_RAND)
-    target_include_directories(WrenVM PUBLIC ${OPT_SRC_FOLDER})
+    target_include_directories(WrenVM PRIVATE ${OPT_SRC_FOLDER})
 endif ()
 
 if (BUILD_OPTIONAL_META)
