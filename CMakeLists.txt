@@ -10,20 +10,20 @@ endif()
 option(BUILD_OPTIONAL_META "Build the optional meta library" ON)
 option(BUILD_OPTIONAL_RAND "Build the optional rand library" OFF)
 
-set(SRC_FOLDER src)
-set(INC_SRC_FOLDER ${SRC_FOLDER}/include/)
-set(VM_SRC_FOLDER ${SRC_FOLDER}/vm)
-set(VM_SRC_FILENAME ${VM_SRC_FOLDER}/wren_)
-set(OPT_SRC_FOLDER ${SRC_FOLDER}/optional)
-set(OPT_SRC_FILENAME ${OPT_SRC_FOLDER}/wren_opt_)
+set(SRC_DIR src)
+set(INC_SRC_DIR ${SRC_DIR}/include/)
+set(VM_SRC_DIR ${SRC_DIR}/vm)
+set(VM_SRC_FILENAME ${VM_SRC_DIR}/wren_)
+set(OPT_SRC_DIR ${SRC_DIR}/optional)
+set(OPT_SRC_FILENAME ${OPT_SRC_DIR}/wren_opt_)
 
 add_library(WrenVM STATIC)
-target_include_directories(WrenVM PUBLIC ${INC_SRC_FOLDER})
+target_include_directories(WrenVM PUBLIC ${INC_SRC_DIR})
 target_sources(WrenVM PUBLIC
-        ${INC_SRC_FOLDER}wren.h
+        ${INC_SRC_DIR}wren.h
         ${VM_SRC_FILENAME}common.h
         )
-target_include_directories(WrenVM PRIVATE ${VM_SRC_FOLDER})
+target_include_directories(WrenVM PRIVATE ${VM_SRC_DIR})
 target_sources(WrenVM PRIVATE
         ${VM_SRC_FILENAME}compiler.h
         ${VM_SRC_FILENAME}compiler.c
@@ -43,7 +43,7 @@ target_sources(WrenVM PRIVATE
         ${VM_SRC_FILENAME}vm.c)
 
 if (BUILD_OPTIONAL_META OR BUILD_OPTIONAL_RAND)
-    target_include_directories(WrenVM PRIVATE ${OPT_SRC_FOLDER})
+    target_include_directories(WrenVM PRIVATE ${OPT_SRC_DIR})
 endif ()
 
 if (BUILD_OPTIONAL_META)
