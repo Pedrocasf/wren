@@ -385,10 +385,10 @@ static inline uint32_t hashBits(uint64_t hash)
 }
 
 // Generates a hash code for [num].
-static inline uint32_t hashNumber(double num)
+static inline uint32_t hashNumber(float num)
 {
   // Hash the raw bits of the value.
-  return hashBits(wrenDoubleToBits(num));
+  return hashBits(wrenFloatToBits(num));
 }
 
 // Generates a hash code for [object].
@@ -660,7 +660,7 @@ ObjModule* wrenNewModule(WrenVM* vm, ObjString* name)
   return module;
 }
 
-Value wrenNewRange(WrenVM* vm, double from, double to, bool isInclusive)
+Value wrenNewRange(WrenVM* vm, float from, float to, bool isInclusive)
 {
   ObjRange* range = ALLOCATE(vm, ObjRange);
   initObj(vm, &range->obj, OBJ_RANGE, vm->rangeClass);
@@ -754,7 +754,7 @@ Value wrenNewStringFromRange(WrenVM* vm, ObjString* source, int start,
   return OBJ_VAL(result);
 }
 
-Value wrenNumToString(WrenVM* vm, double value)
+Value wrenNumToString(WrenVM* vm, float value)
 {
   // Edge case: If the value is NaN or infinity, different versions of libc
   // produce different outputs (some will format it signed and some won't). To
@@ -772,7 +772,7 @@ Value wrenNumToString(WrenVM* vm, double value)
     }
   }
 
-  // This is large enough to hold any double converted to a string using
+  // This is large enough to hold any float converted to a string using
   // "%.14g". Example:
   //
   //     -1.12345678901234e-1022

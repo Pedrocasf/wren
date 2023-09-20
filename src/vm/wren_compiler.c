@@ -750,11 +750,11 @@ static void makeNumber(Parser* parser, bool isHex)
 
   if (isHex)
   {
-    parser->next.value = NUM_VAL((double)strtoll(parser->tokenStart, NULL, 16));
+    parser->next.value = NUM_VAL((float)strtoll(parser->tokenStart, NULL, 16));
   }
   else
   {
-    parser->next.value = NUM_VAL(strtod(parser->tokenStart, NULL));
+    parser->next.value = NUM_VAL(strtof(parser->tokenStart, NULL));
   }
   
   if (errno == ERANGE)

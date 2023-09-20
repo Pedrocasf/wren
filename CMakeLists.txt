@@ -8,7 +8,7 @@ if(POLICY CMP0076)
 endif()
 
 option(BUILD_OPTIONAL_META "Build the optional meta library" ON)
-option(BUILD_OPTIONAL_RAND "Build the optional rand library" OFF)
+option(BUILD_OPTIONAL_RAND "Build the optional rand library" ON)
 
 set(SRC_DIR src)
 set(INC_SRC_DIR ${SRC_DIR}/include/)

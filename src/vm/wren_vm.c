@@ -1691,7 +1691,7 @@ const char* wrenGetSlotBytes(WrenVM* vm, int slot, int* length)
   return string->value;
 }
 
-double wrenGetSlotDouble(WrenVM* vm, int slot)
+float wrenGetSlotFloat(WrenVM* vm, int slot)
 {
   validateApiSlot(vm, slot);
   ASSERT(IS_NUM(vm->apiStack[slot]), "Slot must hold a number.");
@@ -1740,7 +1740,7 @@ void wrenSetSlotBytes(WrenVM* vm, int slot, const char* bytes, size_t length)
   setSlot(vm, slot, wrenNewStringLength(vm, bytes, length));
 }
 
-void wrenSetSlotDouble(WrenVM* vm, int slot, double value)
+void wrenSetSlotFloat(WrenVM* vm, int slot, float value)
 {
   setSlot(vm, slot, NUM_VAL(value));
 }

@@ -19,7 +19,7 @@
 // Usually they trade-off a bit of portability for speed. They default to the
 // most efficient behavior.
 
-// If true, then Wren uses a NaN-tagged double for its core value
+// If true, then Wren uses a NaN-tagged float for its core value
 // representation. Otherwise, it uses a larger more conventional struct. The
 // former is significantly faster and more compact. The latter is useful for
 // debugging and may be more portable.

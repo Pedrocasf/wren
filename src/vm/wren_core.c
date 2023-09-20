@@ -374,7 +374,7 @@ DEF_PRIMITIVE(list_iterate)
   if (!validateInt(vm, args[1], "Iterator")) return false;
 
   // Stop if we're out of bounds.
-  double index = AS_NUM(args[1]);
+  float index = AS_NUM(args[1]);
   if (index < 0 || index >= list->elements.count - 1) RETURN_FALSE;
 
   // Otherwise, move to the next index.
@@ -616,7 +616,7 @@ DEF_PRIMITIVE(num_fromString)
 
   errno = 0;
   char* end;
-  double number = strtod(string->value, &end);
+  float number = strtof(string->value, &end);
 
   // Skip past any trailing whitespace.
   while (*end != '\0' && isspace((unsigned char)*end)) end++;
@@ -638,15 +638,15 @@ DEF_PRIMITIVE(num_fromString)
     }
 
 DEF_NUM_CONSTANT(infinity, INFINITY)
-DEF_NUM_CONSTANT(nan,      WREN_DOUBLE_NAN)
+DEF_NUM_CONSTANT(nan,      WREN_FLOAT_NAN)
 DEF_NUM_CONSTANT(pi,       3.14159265358979323846264338327950288)
 DEF_NUM_CONSTANT(tau,      6.28318530717958647692528676655900577)
 
-DEF_NUM_CONSTANT(largest,  DBL_MAX)
-DEF_NUM_CONSTANT(smallest, DBL_MIN)
+DEF_NUM_CONSTANT(largest,  FLT_MAX)
+DEF_NUM_CONSTANT(smallest, FLT_MIN)
 
-DEF_NUM_CONSTANT(maxSafeInteger, 9007199254740991.0)
-DEF_NUM_CONSTANT(minSafeInteger, -9007199254740991.0)
+DEF_NUM_CONSTANT(maxSafeInteger, 16777217.0)
+DEF_NUM_CONSTANT(minSafeInteger, -16777217.00)
 
 // Defines a primitive on Num that calls infix [op] and returns [type].
 #define DEF_NUM_INFIX(name, op, type)                                          \
@@ -733,8 +733,8 @@ DEF_PRIMITIVE(num_dotDot)
 {
   if (!validateNum(vm, args[1], "Right hand side of range")) return false;
 
-  double from = AS_NUM(args[0]);
-  double to = AS_NUM(args[1]);
+  float from = AS_NUM(args[0]);
+  float to = AS_NUM(args[1]);
   RETURN_VAL(wrenNewRange(vm, from, to, true));
 }
 
@@ -742,8 +742,8 @@ DEF_PRIMITIVE(num_dotDotDot)
 {
   if (!validateNum(vm, args[1], "Right hand side of range")) return false;
 
-  double from = AS_NUM(args[0]);
-  double to = AS_NUM(args[1]);
+  float from = AS_NUM(args[0]);
+  float to = AS_NUM(args[1]);
   RETURN_VAL(wrenNewRange(vm, from, to, false));
 }
 
@@ -758,8 +758,8 @@ DEF_PRIMITIVE(num_min)
 {
   if (!validateNum(vm, args[1], "Other value")) return false;
 
-  double value = AS_NUM(args[0]);
-  double other = AS_NUM(args[1]);
+  float value = AS_NUM(args[0]);
+  float other = AS_NUM(args[1]);
   RETURN_NUM(value <= other ? value : other);
 }
 
@@ -767,8 +767,8 @@ DEF_PRIMITIVE(num_max)
 {
   if (!validateNum(vm, args[1], "Other value")) return false;
 
-  double value = AS_NUM(args[0]);
-  double other = AS_NUM(args[1]);
+  float value = AS_NUM(args[0]);
+  float other = AS_NUM(args[1]);
   RETURN_NUM(value > other ? value : other);
 }
 
@@ -777,10 +777,10 @@ DEF_PRIMITIVE(num_clamp)
   if (!validateNum(vm, args[1], "Min value")) return false;
   if (!validateNum(vm, args[2], "Max value")) return false;
 
-  double value = AS_NUM(args[0]);
-  double min = AS_NUM(args[1]);
-  double max = AS_NUM(args[2]);
-  double result = (value < min) ? min : ((value > max) ? max : value);
+  float value = AS_NUM(args[0]);
+  float min = AS_NUM(args[1]);
+  float max = AS_NUM(args[2]);
+  float result = (value < min) ? min : ((value > max) ? max : value);
   RETURN_NUM(result);
 }
 
@@ -793,7 +793,7 @@ DEF_PRIMITIVE(num_pow)
 
 DEF_PRIMITIVE(num_fraction)
 {
-  double unused;
+  float unused;
   RETURN_NUM(modf(AS_NUM(args[0]) , &unused));
 }
 
@@ -804,7 +804,7 @@ DEF_PRIMITIVE(num_isInfinity)
 
 DEF_PRIMITIVE(num_isInteger)
 {
-  double value = AS_NUM(args[0]);
+  float value = AS_NUM(args[0]);
   if (isnan(value) || isinf(value)) RETURN_FALSE;
   RETURN_BOOL(trunc(value) == value);
 }
@@ -816,7 +816,7 @@ DEF_PRIMITIVE(num_isNan)
 
 DEF_PRIMITIVE(num_sign)
 {
-  double value = AS_NUM(args[0]);
+  float value = AS_NUM(args[0]);
   if (value > 0)
   {
     RETURN_NUM(1);
@@ -838,7 +838,7 @@ DEF_PRIMITIVE(num_toString)
 
 DEF_PRIMITIVE(num_truncate)
 {
-  double integer;
+  float integer;
   modf(AS_NUM(args[0]) , &integer);
   RETURN_NUM(integer);
 }
@@ -936,7 +936,7 @@ DEF_PRIMITIVE(range_iterate)
 
   if (!validateNum(vm, args[1], "Iterator")) return false;
 
-  double iterator = AS_NUM(args[1]);
+  float iterator = AS_NUM(args[1]);
 
   // Iterate towards [to] from [from].
   if (range->from < range->to)
@@ -1199,7 +1199,7 @@ DEF_PRIMITIVE(string_toString)
 
 DEF_PRIMITIVE(system_clock)
 {
-  RETURN_NUM((double)clock() / CLOCKS_PER_SEC);
+  RETURN_NUM((float)clock() / CLOCKS_PER_SEC);
 }
 
 DEF_PRIMITIVE(system_gc)

@@ -36,7 +36,7 @@
 //
 // There are two supported Value representations. The main one uses a technique
 // called "NaN tagging" (explained in detail below) to store a number, any of
-// the value types, or a pointer, all inside one double-precision floating
+// the value types, or a pointer, all inside one single-precision floating
 // point number. A larger, slower, Value type that uses a struct to store these
 // is also supported, and is useful for debugging the VM.
 //
@@ -55,7 +55,7 @@
 #define AS_LIST(value)      ((ObjList*)AS_OBJ(value))           // ObjList*
 #define AS_MAP(value)       ((ObjMap*)AS_OBJ(value))            // ObjMap*
 #define AS_MODULE(value)    ((ObjModule*)AS_OBJ(value))         // ObjModule*
-#define AS_NUM(value)       (wrenValueToNum(value))             // double
+#define AS_NUM(value)       (wrenValueToNum(value))             // float
 #define AS_RANGE(v)         ((ObjRange*)AS_OBJ(v))              // ObjRange*
 #define AS_STRING(v)        ((ObjString*)AS_OBJ(v))             // ObjString*
 #define AS_CSTRING(v)       (AS_STRING(v)->value)               // const char*
@@ -64,7 +64,7 @@
 // more defined below that are specific to the Nan tagged or other
 // representation.
 #define BOOL_VAL(boolean) ((boolean) ? TRUE_VAL : FALSE_VAL)    // boolean
-#define NUM_VAL(num) (wrenNumToValue(num))                      // double
+#define NUM_VAL(num) (wrenNumToValue(num))                      // float
 #define OBJ_VAL(obj) (wrenObjectToValue((Obj*)(obj)))           // Any Obj___*
 
 // These perform type tests on a Value, returning `true` if the Value is of the
@@ -120,7 +120,7 @@ struct sObj
 
 #if WREN_NAN_TAGGING
 
-typedef uint64_t Value;
+typedef uint32_t Value;
 
 #else
 
@@ -139,7 +139,7 @@ typedef struct
   ValueType type;
   union
   {
-    double num;
+    float num;
     Obj* obj;
   } as;
 } Value;
@@ -482,16 +482,16 @@ typedef struct
   Obj obj;
 
   // The beginning of the range.
-  double from;
+  float from;
 
   // The end of the range. May be greater or less than [from].
-  double to;
+  float to;
 
   // True if [to] is included in the range.
   bool isInclusive;
 } ObjRange;
 
-// An IEEE 754 double-precision float is a 64-bit value with bits laid out like:
+// An IEEE 754 single-precision float is a 64-bit value with bits laid out like:
 //
 // 1 Sign bit
 // | 11 Exponent bits
@@ -502,7 +502,7 @@ typedef struct
 // The details of how these are used to represent numbers aren't really
 // relevant here as long we don't interfere with them. The important bit is NaN.
 //
-// An IEEE double can represent a few magical values like NaN ("not a number"),
+// An IEEE float can represent a few magical values like NaN ("not a number"),
 // Infinity, and -Infinity. A NaN is any value where all exponent bits are set:
 //
 //  v--NaN bits
@@ -543,17 +543,17 @@ typedef struct
 // only actually use 48 bits for addresses, so we've got plenty. We just stuff
 // the address right into the mantissa.
 //
-// Ta-da, double precision numbers, pointers, and a bunch of singleton values,
+// Ta-da, float precision numbers, pointers, and a bunch of singleton values,
 // all stuffed into a single 64-bit sequence. Even better, we don't have to
 // do any masking or work to extract number values: they are unmodified. This
 // means math on numbers is fast.
 #if WREN_NAN_TAGGING
 
 // A mask that selects the sign bit.
-#define SIGN_BIT ((uint64_t)1 << 63)
+#define SIGN_BIT ((uint32_t)1 << 31)
 
 // The bits that must be set to indicate a quiet NaN.
-#define QNAN ((uint64_t)0x7ffc000000000000)
+#define QNAN ((uint32_t)0x7fc00000)
 
 // If the NaN bits are set, it's not a number.
 #define IS_NUM(value) (((value) & QNAN) != QNAN)
@@ -585,10 +585,10 @@ typedef struct
 #define AS_OBJ(value) ((Obj*)(uintptr_t)((value) & ~(SIGN_BIT | QNAN)))
 
 // Singleton values.
-#define NULL_VAL      ((Value)(uint64_t)(QNAN | TAG_NULL))
-#define FALSE_VAL     ((Value)(uint64_t)(QNAN | TAG_FALSE))
-#define TRUE_VAL      ((Value)(uint64_t)(QNAN | TAG_TRUE))
-#define UNDEFINED_VAL ((Value)(uint64_t)(QNAN | TAG_UNDEFINED))
+#define NULL_VAL      ((Value)(uint32_t)(QNAN | TAG_NULL))
+#define FALSE_VAL     ((Value)(uint32_t)(QNAN | TAG_FALSE))
+#define TRUE_VAL      ((Value)(uint32_t)(QNAN | TAG_TRUE))
+#define UNDEFINED_VAL ((Value)(uint32_t)(QNAN | TAG_UNDEFINED))
 
 // Gets the singleton type tag for a Value (which must be a singleton).
 #define GET_TAG(value) ((int)((value) & MASK_TAG))
@@ -711,7 +711,7 @@ Value wrenMapRemoveKey(WrenVM* vm, ObjMap* map, Value key);
 ObjModule* wrenNewModule(WrenVM* vm, ObjString* name);
 
 // Creates a new range from [from] to [to].
-Value wrenNewRange(WrenVM* vm, double from, double to, bool isInclusive);
+Value wrenNewRange(WrenVM* vm, float from, float to, bool isInclusive);
 
 // Creates a new string object and copies [text] into it.
 //
@@ -730,7 +730,7 @@ Value wrenNewStringFromRange(WrenVM* vm, ObjString* source, int start,
                              uint32_t count, int step);
 
 // Produces a string representation of [value].
-Value wrenNumToString(WrenVM* vm, double value);
+Value wrenNumToString(WrenVM* vm, float value);
 
 // Creates a new formatted string from [format] and any additional arguments
 // used in the format string.
@@ -842,10 +842,10 @@ static inline Value wrenObjectToValue(Obj* obj)
 #if WREN_NAN_TAGGING
   // The triple casting is necessary here to satisfy some compilers:
   // 1. (uintptr_t) Convert the pointer to a number of the right size.
-  // 2. (uint64_t)  Pad it up to 64 bits in 32-bit builds.
+  // 2. (uint32_t)  Pad it up to 64 bits in 32-bit builds.
   // 3. Or in the bits to make a tagged Nan.
   // 4. Cast to a typedef'd value.
-  return (Value)(SIGN_BIT | QNAN | (uint64_t)(uintptr_t)(obj));
+  return (Value)(SIGN_BIT | QNAN | (uint32_t)(uintptr_t)(obj));
 #else
   Value value;
   value.type = VAL_OBJ;
@@ -854,21 +854,21 @@ static inline Value wrenObjectToValue(Obj* obj)
 #endif
 }
 
-// Interprets [value] as a [double].
-static inline double wrenValueToNum(Value value)
+// Interprets [value] as a [float].
+static inline float wrenValueToNum(Value value)
 {
 #if WREN_NAN_TAGGING
-  return wrenDoubleFromBits(value);
+  return wrenFloatFromBits(value);
 #else
   return value.as.num;
 #endif
 }
 
 // Converts [num] to a [Value].
-static inline Value wrenNumToValue(double num)
+static inline Value wrenNumToValue(float num)
 {
 #if WREN_NAN_TAGGING
-  return wrenDoubleToBits(num);
+  return wrenFloatToBits(num);
 #else
   Value value;
   value.type = VAL_NUM;
