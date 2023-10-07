@@ -794,7 +794,7 @@ DEF_PRIMITIVE(num_pow)
 DEF_PRIMITIVE(num_fraction)
 {
   float unused;
-  RETURN_NUM(modf(AS_NUM(args[0]) , &unused));
+  RETURN_NUM(modff(AS_NUM(args[0]) , &unused));
 }
 
 DEF_PRIMITIVE(num_isInfinity)
@@ -839,7 +839,7 @@ DEF_PRIMITIVE(num_toString)
 DEF_PRIMITIVE(num_truncate)
 {
   float integer;
-  modf(AS_NUM(args[0]) , &integer);
+  modff(AS_NUM(args[0]) , &integer);
   RETURN_NUM(integer);
 }
 
