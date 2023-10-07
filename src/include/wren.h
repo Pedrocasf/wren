@@ -421,7 +421,7 @@ WREN_API const char* wrenGetSlotBytes(WrenVM* vm, int slot, int* length);
 // Reads a number from [slot].
 //
 // It is an error to call this if the slot does not contain a number.
-WREN_API double wrenGetSlotDouble(WrenVM* vm, int slot);
+WREN_API float wrenGetSlotFloat(WrenVM* vm, int slot);
 
 // Reads a foreign object from [slot] and returns a pointer to the foreign data
 // stored with it.
@@ -455,7 +455,7 @@ WREN_API void wrenSetSlotBool(WrenVM* vm, int slot, bool value);
 WREN_API void wrenSetSlotBytes(WrenVM* vm, int slot, const char* bytes, size_t length);
 
 // Stores the numeric [value] in [slot].
-WREN_API void wrenSetSlotDouble(WrenVM* vm, int slot, double value);
+WREN_API void wrenSetSlotFloat(WrenVM* vm, int slot, float value);
 
 // Creates a new instance of the foreign class stored in [classSlot] with [size]
 // bytes of raw storage and places the resulting object in [slot].

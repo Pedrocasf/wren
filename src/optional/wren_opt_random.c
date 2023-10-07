@@ -58,7 +58,7 @@ static void randomSeed1(WrenVM* vm)
 {
   Well512* well = (Well512*)wrenGetSlotForeign(vm, 0);
 
-  srand((uint32_t)wrenGetSlotDouble(vm, 1));
+  srand((uint32_t)wrenGetSlotFloat(vm, 1));
   for (int i = 0; i < 16; i++)
   {
     well->state[i] = rand();
@@ -71,7 +71,7 @@ static void randomSeed16(WrenVM* vm)
 
   for (int i = 0; i < 16; i++)
   {
-    well->state[i] = (uint32_t)wrenGetSlotDouble(vm, i + 1);
+    well->state[i] = (uint32_t)wrenGetSlotFloat(vm, i + 1);
   }
 }
 
@@ -83,23 +83,23 @@ static void randomFloat(WrenVM* vm)
   // full advantage of that, so we need 53 bits of random source data.
 
   // First, start with 32 random bits, shifted to the left 21 bits.
-  double result = (double)advanceState(well) * (1 << 21);
+  float result = (float)advanceState(well) * (1 << 21);
 
   // Then add another 21 random bits.
-  result += (double)(advanceState(well) & ((1 << 21) - 1));
+  result += (float)(advanceState(well) & ((1 << 21) - 1));
 
-  // Now we have a number from 0 - (2^53). Divide be the range to get a double
+  // Now we have a number from 0 - (2^53). Divide be the range to get a float
   // from 0 to 1.0 (half-inclusive).
   result /= 9007199254740992.0;
 
-  wrenSetSlotDouble(vm, 0, result);
+  wrenSetSlotFloat(vm, 0, result);
 }
 
 static void randomInt0(WrenVM* vm)
 {
   Well512* well = (Well512*)wrenGetSlotForeign(vm, 0);
 
-  wrenSetSlotDouble(vm, 0, (double)advanceState(well));
+  wrenSetSlotFloat(vm, 0, (float)advanceState(well));
 }
 
 const char* wrenRandomSource()
