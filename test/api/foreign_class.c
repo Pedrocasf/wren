@@ -7,32 +7,32 @@ static int finalized = 0;
 
 static void apiFinalized(WrenVM* vm)
 {
-  wrenSetSlotDouble(vm, 0, finalized);
+  wrenSetSlotFloat(vm, 0, finalized);
 }
 
 static void counterAllocate(WrenVM* vm)
 {
-  double* value = (double*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(double));
+  float* value = (float*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(float));
   *value = 0;
 }
 
 static void counterIncrement(WrenVM* vm)
 {
-  double* value = (double*)wrenGetSlotForeign(vm, 0);
-  double increment = wrenGetSlotDouble(vm, 1);
+  float* value = (float*)wrenGetSlotForeign(vm, 0);
+  float increment = wrenGetSlotFloat(vm, 1);
 
   *value += increment;
 }
 
 static void counterValue(WrenVM* vm)
 {
-  double value = *(double*)wrenGetSlotForeign(vm, 0);
-  wrenSetSlotDouble(vm, 0, value);
+  float value = *(float*)wrenGetSlotForeign(vm, 0);
+  wrenSetSlotFloat(vm, 0, value);
 }
 
 static void pointAllocate(WrenVM* vm)
 {
-  double* coordinates = (double*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(double[3]));
+  float* coordinates = (float*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(float[3]));
 
   // This gets called by both constructors, so sniff the slot count to see
   // which one was invoked.
@@ -44,23 +44,23 @@ static void pointAllocate(WrenVM* vm)
   }
   else
   {
-    coordinates[0] = wrenGetSlotDouble(vm, 1);
-    coordinates[1] = wrenGetSlotDouble(vm, 2);
-    coordinates[2] = wrenGetSlotDouble(vm, 3);
+    coordinates[0] = wrenGetSlotFloat(vm, 1);
+    coordinates[1] = wrenGetSlotFloat(vm, 2);
+    coordinates[2] = wrenGetSlotFloat(vm, 3);
   }
 }
 
 static void pointTranslate(WrenVM* vm)
 {
-  double* coordinates = (double*)wrenGetSlotForeign(vm, 0);
-  coordinates[0] += wrenGetSlotDouble(vm, 1);
-  coordinates[1] += wrenGetSlotDouble(vm, 2);
-  coordinates[2] += wrenGetSlotDouble(vm, 3);
+  float* coordinates = (float*)wrenGetSlotForeign(vm, 0);
+  coordinates[0] += wrenGetSlotFloat(vm, 1);
+  coordinates[1] += wrenGetSlotFloat(vm, 2);
+  coordinates[2] += wrenGetSlotFloat(vm, 3);
 }
 
 static void pointToString(WrenVM* vm)
 {
-  double* coordinates = (double*)wrenGetSlotForeign(vm, 0);
+  float* coordinates = (float*)wrenGetSlotForeign(vm, 0);
   char result[100];
   sprintf(result, "(%g, %g, %g)",
       coordinates[0], coordinates[1], coordinates[2]);

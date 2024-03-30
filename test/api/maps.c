@@ -28,9 +28,9 @@ static void insert(WrenVM* vm)
   wrenSetSlotString(vm, 2, "London");
   wrenSetMapValue(vm, 0, 1, 2);
 
-  // Insert Double
-  wrenSetSlotDouble(vm, 1, 1.0);
-  wrenSetSlotDouble(vm, 2, 42.0);
+  // Insert Float
+  wrenSetSlotFloat(vm, 1, 1.0);
+  wrenSetSlotFloat(vm, 2, 42.0);
   wrenSetMapValue(vm, 0, 1, 2);
 
   // Insert Boolean
@@ -60,14 +60,14 @@ static void removeKey(WrenVM* vm)
 static void countWren(WrenVM* vm)
 {
   int count = wrenGetMapCount(vm, 1);
-  wrenSetSlotDouble(vm, 0, count);
+  wrenSetSlotFloat(vm, 0, count);
 }
 
 static void countAPI(WrenVM* vm)
 {
   insert(vm);
   int count = wrenGetMapCount(vm, 0);
-  wrenSetSlotDouble(vm, 0, count);
+  wrenSetSlotFloat(vm, 0, count);
 }
 
 static void containsWren(WrenVM* vm)

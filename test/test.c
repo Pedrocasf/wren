@@ -187,7 +187,7 @@
     char* end = path->chars;
 
     // Split into parts and handle "." and "..".
-    int leadingDoubles = 0;
+    int leadingFloats = 0;
     for (;;)
     {
       if (*end == '\0' || isSeparator(*end))
@@ -211,7 +211,7 @@
             else
             {
               // Can't back out any further, so preserve the "..".
-              leadingDoubles++;
+              leadingFloats++;
             }
           }
           else
@@ -254,10 +254,10 @@
       slice.end = path->chars + prefixLength;
       appendSlice(result, slice);
     }
-    else if (leadingDoubles > 0)
+    else if (leadingFloats > 0)
     {
       // Add any leading "..".
-      for (int i = 0; i < leadingDoubles; i++)
+      for (int i = 0; i < leadingFloats; i++)
       {
         if (needsSeparator) pathAppendChar(result, '/');
         pathAppendString(result, "..");
