@@ -39,3 +39,9 @@ ipch/
 
 # macOS
 .DS_Store
+
+#some IDEs
+.idea/
+
+#cmake builds
+cmake-build-release/
