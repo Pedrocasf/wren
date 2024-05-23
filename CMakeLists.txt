@@ -9,6 +9,8 @@ endif()
 
 option(BUILD_OPTIONAL_META "Build the optional meta library" ON)
 option(BUILD_OPTIONAL_RAND "Build the optional rand library" ON)
+option(BUILD_WREN_NAN_TAGGING "Build the VM with NaN tagging" OFF)
+option(BUILD_WREN_COMPUTED_GOTO "Build the VM with computed GOTO" ON)
 
 set(SRC_DIR src)
 set(INC_SRC_DIR ${SRC_DIR}/include/)
@@ -46,17 +48,16 @@ if (BUILD_OPTIONAL_META OR BUILD_OPTIONAL_RAND)
     target_include_directories(WrenVM PRIVATE ${OPT_SRC_DIR})
 endif ()
 
+add_compile_definitions(WREN_OPT_META=${BUILD_OPTIONAL_META})
 if (BUILD_OPTIONAL_META)
-        add_compile_definitions(WREN_OPT_META=1)
         target_sources(WrenVM PUBLIC
                 ${OPT_SRC_FILENAME}meta.h
         )
         target_sources(WrenVM PRIVATE
                 ${OPT_SRC_FILENAME}meta.c
         )
-else()
-        add_compile_definitions(WREN_OPT_META=0) 
 endif ()
+add_compile_definitions(WREN_OPT_RANDOM=${BUILD_OPTIONAL_RAND})
 if (BUILD_OPTIONAL_RAND)
         add_compile_definitions(WREN_OPT_RANDOM=1)                   
         target_sources(WrenVM PUBLIC
@@ -65,8 +66,7 @@ if (BUILD_OPTIONAL_RAND)
     target_sources(WrenVM PRIVATE
                 ${OPT_SRC_FILENAME}random.c
         )
-else()
-        add_compile_definitions(WREN_OPT_RANDOM=0) 
 endif ()
-
+add_compile_definitions(WREN_NAN_TAGGING=${BUILD_WREN_NAN_TAGGING})
+add_compile_definitions(WREN_COMPUTED_GOTO=${BUILD_WREN_COMPUTED_GOTO})
 target_link_libraries(WrenVM m)
