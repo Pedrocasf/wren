@@ -58,8 +58,7 @@ if (BUILD_OPTIONAL_META)
         )
 endif ()
 add_compile_definitions(WREN_OPT_RANDOM=${BUILD_OPTIONAL_RAND})
-if (BUILD_OPTIONAL_RAND)
-        add_compile_definitions(WREN_OPT_RANDOM=1)                   
+if (BUILD_OPTIONAL_RAND)                  
         target_sources(WrenVM PUBLIC
                 ${OPT_SRC_FILENAME}random.h
         )
