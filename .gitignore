@@ -46,3 +46,5 @@ ipch/
 #cmake builds
 cmake-build-release/
 cmake-build-debug/
+
+zig-out/
