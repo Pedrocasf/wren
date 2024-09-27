@@ -26,7 +26,7 @@
 //
 // Defaults to on.
 #ifndef WREN_NAN_TAGGING
-  #define WREN_NAN_TAGGING 1
+  #define WREN_NAN_TAGGING 0
 #endif
 
 // If true, the VM's interpreter loop uses computed gotos. See this for more:
